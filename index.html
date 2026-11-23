@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leonida Clipper Studio — Manual Two-Box Clip Editor · Free · No Server</title>
+<link rel="icon" href="./favicon.png">
+<style>
+  :root{
+    --bg:#0a0616; --card:#150d28; --card2:#1d1338;
+    --pink:#ff2e88; --purple:#a855f7; --orange:#ff8a00;
+    --text:#f8f3ff; --muted:#b8a8dd; --border:#33254f; --green:#34d399;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--text);min-height:100vh;
+    font-size:16px;line-height:1.55}
+  header{position:relative;overflow:hidden;text-align:center;
+    padding:44px 20px 0;
+    background:
+      radial-gradient(700px 340px at 50% 108%, rgba(255,138,0,.55), transparent 65%),
+      radial-gradient(900px 420px at 50% 118%, rgba(255,46,136,.5), transparent 60%),
+      linear-gradient(180deg,#1a0b2e 0%,#3b1150 55%,#7a1e5e 100%)}
+  .hero-logo{width:500px;max-width:88vw;height:auto;margin:14px auto 0;display:block;
+    filter:drop-shadow(0 6px 24px rgba(0,0,0,.55))}
+  header .mark{position:relative;z-index:2;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+    color:#ffd9ec;text-shadow:0 1px 12px rgba(0,0,0,.5)}
+  header p{position:relative;z-index:2;color:#efe6ff;margin:12px auto 0;max-width:640px;font-size:16px;
+    text-shadow:0 1px 12px rgba(0,0,0,.5)}
+  .skyline{display:block;width:100%;height:86px;margin-top:20px}
+  main{max-width:980px;margin:0 auto;padding:28px 24px 48px}
+  @media (max-width:560px){main{padding:20px 16px 40px}}
+  .card{background:var(--card);border:1px solid var(--border);
+    border-radius:20px;padding:28px;margin-top:20px}
+  @media (max-width:560px){.card{padding:20px}}
+  .card h2{margin:0 0 4px;font-size:19px;font-weight:700}
+  .card .hint{color:var(--muted);font-size:15px;margin:0 0 20px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--muted);
+    margin:20px 0 6px;text-transform:uppercase;letter-spacing:.6px}
+  input[type="text"],select,textarea{width:100%;padding:13px 14px;border-radius:12px;
+    border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:15px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
+  textarea{min-height:74px;resize:vertical;line-height:1.5}
+  input[type="range"]{width:100%;accent-color:var(--pink)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:560px){.row{grid-template-columns:1fr}}
+  button{width:100%;margin-top:24px;padding:15px;border:0;border-radius:14px;cursor:pointer;
+    font-size:17px;font-weight:700;color:#fff;background:var(--pink)}
+  button:hover:not(:disabled){filter:brightness(1.1)}
+  button.secondary{background:transparent;border:1px solid var(--border);color:var(--text);font-size:15px}
+  button.secondary:hover:not(:disabled){border-color:var(--pink)}
+  button:disabled{opacity:.55;cursor:not-allowed}
+  button.small{width:auto;margin-top:0;padding:9px 14px;font-size:14px}
+  .dropzone{border:2px dashed #5b4391;border-radius:16px;padding:32px 16px;
+    text-align:center;color:var(--muted);cursor:pointer;background:var(--card2)}
+  .dropzone:hover{border-color:var(--pink)}
+  .dropzone.drag{border-color:var(--pink);background:#ff2e8814}
+  .dropzone strong{color:var(--text);font-size:17px}
+  .fileinfo{margin-top:12px;font-size:14px;color:var(--green)}
+  .notice{display:none;border-left:3px solid var(--orange);padding:12px 14px;
+    background:#ff8a0012;border-radius:10px;font-size:14px;line-height:1.55;color:var(--muted);margin-top:14px}
+  .notice.show{display:block}
+  .notice strong{color:var(--text)}
+  .progress{height:10px;border-radius:999px;background:var(--card2);overflow:hidden;
+    margin-top:16px;display:none}
+  .progress.show{display:block}
+  .progress > div{height:100%;width:0%;border-radius:999px;background:var(--pink);transition:width .3s}
+  .status{font-size:15px;color:var(--muted);margin-top:12px;line-height:1.55;min-height:22px}
+  .status b{color:var(--text)}
+  .log{font-size:12px;color:var(--muted);white-space:pre-wrap;word-break:break-word;
+    background:#0a0616;border:1px solid var(--border);border-radius:12px;padding:12px;
+    max-height:140px;overflow-y:auto;margin-top:12px;display:none}
+  .log.show{display:block}
+  .pill{flex:1 1 45%;min-width:140px;text-align:left;padding:12px 14px;border-radius:12px;
+    border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;
+    font-size:14px;width:auto;margin-top:0}
+  .pill.selected{border-color:var(--pink);background:#ff2e8814}
+  .pill.small{flex:0 0 auto;min-width:0;padding:9px 14px}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .mode-toggle{display:flex;gap:8px;justify-content:center;margin:20px auto 0;max-width:560px}
+  .mode-toggle .pill{flex:1;text-align:center;font-size:16px;padding:14px}
+  /* Stage — the canvas preview with draggable boxes */
+  .stage-wrap{display:flex;justify-content:center;margin-top:16px}
+  .stage{position:relative;width:100%;max-width:420px;background:#000;border:1px solid var(--border);
+    border-radius:12px;overflow:hidden;aspect-ratio:9/16}
+  .stage > video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .box{position:absolute;border:2px solid var(--pink);border-radius:6px;cursor:move;
+    overflow:hidden;background:rgba(0,0,0,.15);touch-action:none}
+  .box.selected{border-color:#fff;box-shadow:0 0 0 2px var(--pink)}
+  .box.tracked{border-style:dashed}
+  .box video{position:absolute;object-fit:fill;pointer-events:none}
+  .box-label{position:absolute;top:4px;left:4px;z-index:2;font-size:11px;font-weight:800;
+    letter-spacing:.5px;background:rgba(0,0,0,.65);color:#fff;padding:2px 6px;border-radius:6px;
+    pointer-events:none;white-space:nowrap}
+  .box.tracked .box-label{background:var(--pink)}
+  .box-handle{position:absolute;right:-2px;bottom:-2px;width:18px;height:18px;z-index:2;
+    background:var(--pink);border:2px solid #fff;border-radius:4px;cursor:nwse-resize}
+  .stage-headline{position:absolute;top:6%;left:5%;right:5%;z-index:3;text-align:center;
+    font-size:20px;font-weight:900;color:#fff;pointer-events:none;
+    text-shadow:2px 2px 0 #000,-2px 2px 0 #000,2px -2px 0 #000,-2px -2px 0 #000}
+  .stage-handle{position:absolute;bottom:4%;left:5%;z-index:3;font-size:13px;font-weight:700;
+    color:#fff;pointer-events:none;text-shadow:1px 1px 0 #000}
+  .boxinfo{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.6}
+  /* Crop editor */
+  .crop-frame{position:relative;max-width:520px;margin-top:10px;border:1px solid var(--border);
+    border-radius:12px;overflow:hidden;background:#000}
+  .crop-frame video{width:100%;display:block}
+  .crop-rect{position:absolute;border:2px solid var(--orange);background:rgba(255,138,0,.12);
+    cursor:move;touch-action:none}
+  .crop-rect .crop-resize{position:absolute;right:-6px;bottom:-6px;width:18px;height:18px;
+    background:var(--orange);border:2px solid #fff;border-radius:4px;cursor:nwse-resize}
+  /* Boxes panel */
+  .box-row{display:flex;align-items:center;gap:8px;margin-top:8px;padding:10px 12px;
+    background:var(--card2);border:1px solid var(--border);border-radius:12px}
+  .box-row.selected{border-color:var(--pink)}
+  .box-row-pick{flex:0 0 auto;width:auto;margin:0;padding:8px 10px;font-size:14px;
+    background:transparent;border:1px solid var(--border);color:var(--text)}
+  .box-row select{flex:1;margin:0;padding:9px 10px;font-size:14px}
+  .track-toggle{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);
+    margin:0;text-transform:none;letter-spacing:0;white-space:nowrap;cursor:pointer}
+  .track-toggle input{accent-color:var(--pink);width:16px;height:16px}
+  .box-row-remove{flex:0 0 auto;width:auto;margin:0;padding:8px 12px;font-size:14px;
+    background:transparent;border:1px solid var(--border);color:var(--text)}
+  /* Timeline */
+  .timeline{position:relative;height:96px;background:var(--card2);border:1px solid var(--border);
+    border-radius:12px;margin-top:12px;cursor:pointer;overflow:hidden}
+  .timeline canvas{position:absolute;inset:0;width:100%;height:100%}
+  .range-sel{position:absolute;top:0;bottom:0;background:rgba(255,46,136,.18);
+    border-left:2px solid var(--pink);border-right:2px solid var(--pink);pointer-events:none}
+  .marker{position:absolute;top:0;bottom:0;width:14px;margin-left:-7px;cursor:ew-resize;z-index:2}
+  .marker::after{content:"";position:absolute;left:6px;top:0;bottom:0;width:2px;background:#fff}
+  .marker.in::after{background:var(--green)}
+  .marker.out::after{background:var(--orange)}
+  .marker span{position:absolute;top:2px;left:50%;transform:translateX(-50%);
+    font-size:10px;font-weight:800;background:rgba(0,0,0,.7);padding:1px 5px;border-radius:4px;color:#fff}
+  .play-marker{position:absolute;top:0;bottom:0;width:2px;background:#fff;z-index:1;pointer-events:none}
+  .guide60{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--orange);
+    z-index:1;pointer-events:none}
+  .guide60 span{position:absolute;bottom:2px;left:4px;font-size:10px;color:var(--orange);white-space:nowrap}
+  .thumb-strip{display:flex;gap:6px;margin-top:10px;overflow-x:auto}
+  .thumb-strip canvas{width:96px;flex:0 0 auto;border-radius:8px;border:1px solid var(--border);cursor:pointer}
+  .len-readout{font-size:15px;font-weight:700;margin-top:12px}
+  .style-picker{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .style-opt{flex:1 1 45%;min-width:140px;text-align:left;padding:10px 12px;border-radius:12px;
+    border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:13px;
+    width:auto;margin-top:0}
+  .style-opt.selected{border-color:var(--pink);background:#ff2e8814}
+  .style-opt .swatch{display:block;font-size:20px;font-weight:900;line-height:1.2;margin-bottom:2px}
+  .cap-src{font-size:13px;color:var(--muted);margin-top:10px}
+  .cap-src b{color:var(--text)}
+  .note{border-left:3px solid var(--orange);padding:12px 14px;background:#ff8a0012;
+    border-radius:10px;font-size:14px;line-height:1.55;color:var(--muted)}
+  details.how{margin-top:24px;border-top:1px solid var(--border);padding-top:16px}
+  details.how summary{cursor:pointer;color:var(--muted);font-size:15px;font-weight:600}
+  details.how p,details.how li{color:var(--muted);font-size:15px}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:0 16px 36px}
+  a{color:var(--pink)}
+  .result-video{width:100%;max-width:420px;display:block;margin:16px auto 0;border-radius:12px;background:#000}
+  .dl-link{display:block;text-align:center;margin:16px 0 0;padding:13px;border-radius:12px;
+    background:var(--pink);color:#fff;text-decoration:none;font-weight:700;font-size:15px}
+</style>
+</head>
+<body>
+<header>
+  <div class="mark">Leonida Nights</div>
+  <img class="hero-logo" src="./assets/logo.png" alt="Leonida Clipper Studio">
+  <p>Cut clips by hand — two boxes, your moments, your words. Free, no server, no API key, no watermark — your video never leaves your device.</p>
+  <svg class="skyline" viewBox="0 0 800 86" preserveAspectRatio="none" aria-hidden="true">
+    <g fill="#12081f">
+      <rect x="0" y="46" width="70" height="40"/><rect x="80" y="30" width="46" height="56"/>
+      <rect x="136" y="52" width="60" height="34"/><rect x="206" y="18" width="40" height="68"/>
+      <rect x="256" y="40" width="66" height="46"/><rect x="332" y="26" width="44" height="60"/>
+      <rect x="386" y="48" width="70" height="38"/><rect x="466" y="14" width="42" height="72"/>
+      <rect x="518" y="38" width="64" height="48"/><rect x="592" y="28" width="46" height="58"/>
+      <rect x="648" y="50" width="62" height="36"/><rect x="720" y="22" width="80" height="64"/>
+    </g>
+    <g stroke="#12081f" stroke-width="5" stroke-linecap="round" fill="none">
+      <path d="M60 86 V52 M60 52 C40 44 30 34 28 22 M60 52 C78 42 88 34 92 20 M60 52 C60 38 56 28 48 18"/>
+      <path d="M748 86 V56 M748 56 C730 48 720 40 718 28 M748 56 C764 46 774 38 778 26 M748 56 C748 44 744 34 736 26"/>
+    </g>
+    <g fill="#ff2e88"><circle cx="206" cy="14" r="3"/><circle cx="466" cy="10" r="3"/><circle cx="720" cy="18" r="3"/></g>
+  </svg>
+</header>
+<main>
+
+  <div class="mode-toggle" id="modeToggle" role="group" aria-label="Clipping mode">
+    <button type="button" class="pill selected" data-mode="game"><b>Game clipping</b><br><span style="color:var(--muted);font-weight:400">Gameplay + facecam boxes</span></button>
+    <button type="button" class="pill" data-mode="podcast"><b>Podcast clipping</b><br><span style="color:var(--muted);font-weight:400">Speaker split — up to 4 people</span></button>
+  </div>
+  <p class="hint" id="modeHint" style="text-align:center;color:var(--muted);font-size:14px;margin-top:10px">Game mode: game + facecam layouts by default, boxes labelled GAME and CAM.</p>
+
+  <section class="card">
+    <h2>Step 1 — Add your video files</h2>
+    <p class="hint">Upload the video you want to clip. Optionally add a second video (a separate facecam recording) — its box can be synced with the slider below.</p>
+
+    <div class="dropzone" id="dropZone" tabindex="0" role="button" aria-label="Upload a video file">
+      <strong>Drop your main video here</strong><br>
+      or tap to choose a file from your device<br>
+      <span style="font-size:13px">MP4, WebM, MOV and most other video files work</span>
+    </div>
+    <input type="file" id="fileInput" accept="video/*,.mp4,.webm,.mov,.mkv,.avi" hidden>
+    <div class="fileinfo" id="fileInfo"></div>
+
+    <div class="notice show">
+      <strong>No YouTube links here — on purpose.</strong> Pasting a link needs a
+      server to fetch the video, and this site has no server (that is the whole
+      point: no API key, no server, nothing uploaded). Download the video to
+      your device first — for example with the free <b>Leonida Clipper Pro</b>
+      desktop tool, which takes YouTube links — then drop the file above.
+    </div>
+
+    <label for="secondInput">Second video — facecam / second speaker (optional)</label>
+    <input type="file" id="secondInput" accept="video/*,.mp4,.webm,.mov,.mkv,.avi" style="padding:10px">
+    <div class="fileinfo" id="secondInfo"></div>
+    <button id="clearSecondBtn" type="button" class="secondary small">Remove second video</button>
+
+    <div id="syncRow" style="display:none">
+      <label for="syncSlider">Sync — shift the 2nd video</label>
+      <input type="range" id="syncSlider" min="-5" max="5" step="0.1" value="0">
+      <div style="font-size:13px;color:var(--muted)" id="syncLabel">0s — in sync</div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="srtInput">Captions file (optional)</label>
+        <input type="file" id="srtInput" accept=".srt,.vtt" style="padding:10px">
+        <div style="font-size:13px;color:var(--muted);margin-top:6px">An .srt/.vtt file for the whole video — used for burned-in subtitles. If your video already has captions inside it, they are used automatically.</div>
+      </div>
+      <div>
+        <label>What this tool cannot do</label>
+        <div style="font-size:13px;color:var(--muted);margin-top:6px">No automatic moment-finding — <b style="color:var(--text)">you</b> pick the moment on the timeline. No automatic transcription — captions come from the video, a captions file, or words you type. Export runs in your browser and takes a few minutes per clip.</div>
+      </div>
+    </div>
+
+    <div class="status" id="status">Upload a video, arrange the boxes, set In and Out on the timeline, then export.</div>
+    <div class="log" id="log"></div>
+  </section>
+
+  <section class="card">
+    <h2>Step 2 — Arrange the boxes</h2>
+    <p class="hint">Each box shows a video — or a region of one video. Drag a box to move it, drag its pink corner to resize it, tap a box to select it. The preview shows exactly what the export will look like.</p>
+
+    <label>Canvas size</label>
+    <div class="pills" id="canvasPills"></div>
+
+    <label>Layout</label>
+    <div class="pills" id="presetPills"></div>
+
+    <div id="cornerRow">
+      <label>Facecam corner</label>
+      <div class="pills" id="cornerPills"></div>
+    </div>
+
+    <label>Boxes — up to 4</label>
+    <div class="pills" style="gap:8px">
+      <button id="addBoxBtn" type="button" class="pill small">＋ Add box</button>
+      <button id="autoArrangeBtn" type="button" class="pill small">Auto-arrange (grid)</button>
+      <span id="boxCount" style="align-self:center;color:var(--muted);font-size:13px"></span>
+    </div>
+    <div id="boxList"></div>
+    <p class="hint" style="margin-top:10px">Face tracking: turn <b style="color:var(--text)">Track face</b> on for a box and its crop follows the detected face during export. It is computed in your browser at export time (a few extra seconds) — not live in this preview, so a tracked box shows a dashed pink border here. If no face is found in the clip, that box simply stays still.</p>
+
+    <div class="stage-wrap">
+      <div class="stage" id="stage">
+        <video id="mainVideo" muted playsinline preload="metadata"></video>
+        <div class="stage-headline" id="stageHeadline" style="display:none"></div>
+        <div class="stage-handle" id="stageHandle" style="display:none"></div>
+      </div>
+    </div>
+    <div class="boxinfo" id="boxInfo"></div>
+
+    <div id="cropWrap" style="display:none">
+      <label id="cropTitle">Source region</label>
+      <p class="hint">This is the part of the video that box shows. Drag the orange frame to move it, drag its corner to resize it. With one video, each box can show a different region — e.g. the facecam corner for one box, the gameplay for the other.</p>
+      <div class="crop-frame" id="cropFrame">
+        <video id="cropVideo" muted playsinline preload="metadata"></video>
+        <div class="crop-rect" id="cropRect"><span class="crop-resize" id="cropResize"></span></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button id="cropFullBtn" type="button" class="secondary small">Full frame</button>
+        <button id="cropSwapBtn" type="button" class="secondary small">Switch to the other box</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Step 3 — Pick the moment</h2>
+    <p class="hint">Scrub the timeline, then set In and Out. Any length works — the dashed orange line marks 60 seconds from In, the Shorts length.</p>
+    <div style="display:flex;gap:8px">
+      <button id="playBtn" type="button" class="secondary small">▶ Play</button>
+      <button id="setInBtn" type="button" class="secondary small">Set In here</button>
+      <button id="setOutBtn" type="button" class="secondary small">Set Out here</button>
+    </div>
+    <div class="timeline" id="timeline">
+      <canvas id="waveCanvas"></canvas>
+      <div class="range-sel" id="rangeSel"></div>
+      <div class="guide60" id="guide60"><span>60s</span></div>
+      <div class="play-marker" id="playMarker"></div>
+      <div class="marker in" id="inMarker"><span>IN</span></div>
+      <div class="marker out" id="outMarker"><span>OUT</span></div>
+    </div>
+    <div class="thumb-strip" id="thumbStrip"></div>
+    <div class="len-readout" id="lenReadout">Clip: 0:00 → 1:00 · 60.0s</div>
+  </section>
+
+  <section class="card">
+    <h2>Step 4 — Text &amp; captions</h2>
+    <p class="hint">A big hook line at the top, an optional name/handle, and the same 5 subtitle styles as Leonida Clipper Pro — burned in at export.</p>
+    <label for="headlineInput">Headline hook (top of the frame)</label>
+    <input type="text" id="headlineInput" placeholder="e.g. YOU WON'T BELIEVE THIS" maxlength="80">
+    <label for="handleInput">Name / handle (bottom-left, optional)</label>
+    <input type="text" id="handleInput" placeholder="e.g. @LeonidaNights07" maxlength="40">
+    <label>Subtitle style</label>
+    <div class="style-picker" id="stylePicker"></div>
+    <label for="capText">Captions for this clip</label>
+    <textarea id="capText" placeholder="Type the words spoken in this clip, in order — one line. Leave it empty to use the captions file or the captions inside the video."></textarea>
+    <div class="cap-src" id="capStatus">No captions yet — upload a captions file, or type the words above. This site cannot transcribe speech by itself.</div>
+  </section>
+
+  <section class="card">
+    <h2>Step 5 — Export</h2>
+    <p class="hint">Cut in your browser with ffmpeg.wasm — H.264 + AAC, exact canvas size, no watermark. In-browser export is slow: several minutes for a 60-second clip. Keep this tab open while it runs.</p>
+    <button id="exportBtn" type="button">Export Clip</button>
+    <div class="progress" id="progressWrap"><div id="progressBar"></div></div>
+  </section>
+
+  <section class="card" id="resultsCard" style="display:none">
+    <h2>Your clip</h2>
+    <video class="result-video" id="resultVideo" controls playsinline preload="metadata"></video>
+    <a class="dl-link" id="downloadLink" href="#" download>Download Clip</a>
+    <button id="newClipBtn" type="button" class="secondary">Cut another clip from this video</button>
+  </section>
+
+  <details class="how">
+    <summary>How it works — and what it can't do</summary>
+    <p>1. Upload your video file (and a second one if you have a separate facecam). 2. Pick a canvas size and a layout, drag the boxes where you want them, and set each box's source region. 3. Scrub the timeline and set In and Out. 4. Add a headline, a handle, and pick a subtitle style. 5. Export — the clip is cut in your browser and downloaded as an MP4.</p>
+    <p><strong>Face tracking:</strong> per box, on or off. When on, the box's crop follows the detected face as the person moves — computed in your browser during export with MediaPipe (BlazeFace), no server. The preview does not track live; a tracked box shows a dashed pink border. If no face is found, the box stays still and the export still completes.</p>
+    <p><strong>Modes:</strong> Game clipping defaults to game + facecam layouts; Podcast clipping defaults to the 50/50 speaker split and labels boxes SPK 1, SPK 2… The mode only changes defaults — every layout and box works in both modes, and you can add up to 4 boxes either way.</p>
+    <p><strong>Subtitles:</strong> this site cannot transcribe speech by itself — that needs the local Python tool (Whisper) or a paid service, and this site has neither. Captions come from (a) subtitles already inside your video file, (b) an .srt/.vtt file you upload, or (c) words you type for the clip. If a clip has none of those, it exports with no subtitles.</p>
+    <p><strong>YouTube links:</strong> not supported on this site. A link needs a server to fetch the video, and this site has no server. Use the free local <a href="https://github.com/leonidanights07/leonida-clipper-pro">Leonida Clipper Pro</a> tool for YouTube links, then bring the file here — or cut it there directly.</p>
+    <div class="note">Honest limits: you pick every moment yourself — nothing here finds the best moments for you (Leonida Clipper Pro does that automatically). Face tracking follows the face nearest each box's region and can lose it if the person leaves the frame or turns away. Export is slow in a browser (several minutes per clip). Videos over about 1 GB can be slow or run out of browser memory. And the tool does not grant permission to clip anyone's video: only use it on creators who have given permission to clip their videos.</div>
+    <p style="font-size:13px">First run loads the video cutter (about 30 MB) from the internet, so it can take a minute on a slow connection. After that, cutting happens on your device. Your video file is never uploaded anywhere.</p>
+  </details>
+
+</main>
+<footer>
+  Leonida Clipper Studio · Free · No server · No API key · No watermark · Made for Leonida Nights
+</footer>
+<script type="module" src="./studio.js"></script>
+</body>
+</html>
